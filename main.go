@@ -14,7 +14,7 @@ func getSTable(key int) []byte {
 	return table[key]
 }
 
-func SBoxEncode(input, output *[]byte, key int) { //encodes byte array, key chooses one of rows in table above
+func SBoxEncrypt(input, output *[]byte, key int) { //encrypts byte array, key chooses one of rows in table above
 	sTable := getSTable(key)
 	firstHalf := byte(0)
 	secondHalf := byte(0)
@@ -36,7 +36,7 @@ func find(ar []byte, s byte) byte {
 	return 0
 }
 
-func SBoxDecode(input, output *[]byte, key int) { //decodes byte array back, needs same key as encoder
+func SBoxDecrypt(input, output *[]byte, key int) { //decrypts byte array back, needs same key as encoder
 	sTable := getSTable(key) //we can have either reverse table or search in original one
 	firstHalf := byte(0)     //reverse table is faster but needs separate function to calculate it
 	secondHalf := byte(0)
@@ -63,7 +63,7 @@ func numFromBits(input *[]byte) byte { //turns array of bits into number
 	return res
 }
 
-func PBoxEncode(input, output *[]byte) { //encodes array of bytes
+func PBoxEncrypt(input, output *[]byte) { //encrypts array of bytes
 	pTable := []byte{3, 7, 0, 1, 6, 2, 5, 4}
 	bits := make([]byte, 8)
 	outBits := make([]byte, 8)
@@ -76,7 +76,7 @@ func PBoxEncode(input, output *[]byte) { //encodes array of bytes
 	}
 }
 
-func PBoxDecode(input, output *[]byte) { //decodes array of bytes
+func PBoxDecrypt(input, output *[]byte) { //decrypts array of bytes
 	pTable := []byte{2, 3, 5, 0, 7, 6, 4, 1}
 	bits := make([]byte, 8)
 	outBits := make([]byte, 8)
@@ -96,24 +96,24 @@ func main() {
 	sOutput := make([]byte, len(input))
 	sOutput2 := make([]byte, len(input))
 
-	SBoxEncode(&input, &sOutput, 2)
-	SBoxDecode(&sOutput, &sOutput2, 2)
+	SBoxEncrypt(&input, &sOutput, 2)
+	SBoxDecrypt(&sOutput, &sOutput2, 2)
 
 	fmt.Print("input:              ")
 	fmt.Println(input)
-	fmt.Print("encoded by s-boxes: ")
+	fmt.Print("encrypted by s-boxes: ")
 	fmt.Println(sOutput)
-	fmt.Print("decoded by s-boxes: ")
+	fmt.Print("decrypted by s-boxes: ")
 	fmt.Println(sOutput2)
 
 	pOutput := make([]byte, len(input))
 	pOutput2 := make([]byte, len(input))
 
-	PBoxEncode(&input, &pOutput)
-	PBoxDecode(&pOutput, &pOutput2)
+	PBoxEncrypt(&input, &pOutput)
+	PBoxDecrypt(&pOutput, &pOutput2)
 
-	fmt.Print("encoded by p-boxes: ")
+	fmt.Print("encrypted by p-boxes: ")
 	fmt.Println(pOutput)
-	fmt.Print("decoded by p-boxes: ")
+	fmt.Print("decrypted by p-boxes: ")
 	fmt.Println(pOutput2)
 }
